@@ -23,53 +23,112 @@
 @section('page-script')
 <script src="{{asset('assets/js/dashboards-analytics.js')}}"></script>
 <script>
-  $('.dropify').dropify({
-    allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-    messages: {
-      'default': 'Drag and drop a file here or click',
-      'replace': 'Drag and drop or click to replace',
-      'remove': 'Remove',
-      'error': 'Ooops, something wrong happended.'
-    },
 
-    tpl: {
-      wrap: '<div class="dropify-wrapper"></div>',
-      loader: '<div class="dropify-loader"></div>',
-      message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop Image</p></div>',
-      preview: '<div class="dropify-preview"><span class="dropify-render"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message">Drag and drop to replace</p></div></div></div>',
-      filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner"></span></p>',
-      clearButton: '<button type="button" class="dropify-clear" style="margin-right:60px">Remove</button>',
-      errorLine: '<p class="dropify-error">Ooops, something wrong happended.</p>',
-      errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
-    },
+  // $('.dropify').dropify({
+  //   allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+  //   messages: {
+  //       'default': 'Drag and drop a file here or click',
+  //       'replace': 'Drag and drop or click to replace',
+  //       'remove':  'Remove',
+  //       'error':   'Ooops, something wrong happended.'
+  //   },
+    
+  //   tpl: {
+  //       wrap:            '<div class="dropify-wrapper"></div>',
+  //       loader:          '<div class="dropify-loader"></div>',
+  //       message:         '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop Image</p></div>',
+  //       preview:         '<div class="dropify-preview"><span class="dropify-render"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message">Drag and drop to replace</p></div></div></div>',
+  //       filename:        '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner"></span></p>',
+  //       clearButton:     '<button type="button" class="dropify-clear" style="margin-right:60px">Remove</button>',
+  //       errorLine:       '<p class="dropify-error">No Image</p>',
+  //       errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+  //   },
 
-    error: {
-      'fileSize': 'The file size is too big (2MB max).'
-    }
+  //   error: {
+  //       'fileSize': 'The file size is too big (2MB max).'
+  //   }
 
-  });
+  // });
+
+  function imageExists(image_url){
+  var http = new XMLHttpRequest();
+  http.open('HEAD', image_url, false);
+  http.send();
+  return http.status != 404;
+  }
 
   function openEditDustbin(recordId) {
     let url = `{{url('fetchDustbin/${recordId}')}}`;
     $.ajax({
-      url: url,
-      type: 'GET',
-      success: function(data) {
-        $('#name').val(data.name);
-        $('#text').val(data.text);
-        $('#fill_percentage').val(data.fill_percentage);
-        $('#dustbinupdateid').val(recordId);
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      $('#name').val(data.name);
+      $('#text').val(data.text);
+      $('#fill_percentage').val(data.fill_percentage);
+      $('#dustbinupdateid').val(recordId);
 
-        var imagenUrl = "assets/img/dustbins/" + data.image;
-        var drEvent = $('.dropify').dropify({
-          defaultFile: imagenUrl
+      // var imagenUrl = "assets/img/dustbins/" + data.image;
+      var imagenUrl = `{{url('assets/img/dustbins//${data.image}')}}`;
+
+      if (!imageExists(imagenUrl)) {
+        let imagenUrl1 = "";
+        let drEvent1 = $('.dropify').dropify({
+        defaultFile: imagenUrl1,
+        allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+        tpl: {
+          wrap:            '<div class="dropify-wrapper"></div>',
+          loader:          '<div class="dropify-loader"></div>',
+          message:         '<div class="dropify-message"><span class="file-icon" /> <p>Image Not Found</p></div>',
+          preview:         '<div class="dropify-preview" style="display:none;"><span class="dropify-render"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message">Drag and drop to replace</p></div></div></div>',
+          filename:        '<p class="dropify-filename" style="display:none;"><span class="file-icon"></span> <span class="dropify-filename-inner"></span></p>',
+          clearButton:     '<button type="button" class="dropify-clear" style="margin-right:60px; display:none;">Remove</button>',
+          errorLine:       '<p class="dropify-error">No Image</p>',
+          errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+        },
+
+        error: {
+          'fileSize': 'The file size is too big (2MB max).'
+        }
+
         });
-        drEvent = drEvent.data('dropify');
-        drEvent.resetPreview();
-        drEvent.clearElement();
-        drEvent.settings.defaultFile = imagenUrl;
-        drEvent.destroy();
-        drEvent.init();
+        console.log('Ni milaaa na janu....!!!!');
+        // drEvent1.resetPreview();
+        // drEvent1.clearElement();
+        drEvent1 = drEvent1.data('dropify');
+        drEvent1.settings.defaultFile = imagenUrl1;
+        drEvent1.destroy();
+        drEvent1.init();
+      }
+      else {
+        let imagenUrl2 = `{{url('assets/img/dustbins//${data.image}')}}`;
+        let drEvent2 = $('.dropify').dropify({
+          defaultFile: imagenUrl2,
+        allowedFileExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+        tpl: {
+          wrap:            '<div class="dropify-wrapper"></div>',
+          loader:          '<div class="dropify-loader"></div>',
+          message:         '<div class="dropify-message"><span class="file-icon" /> <p>Drag and Drop Image</p></div>',
+          preview:         '<div class="dropify-preview"><span class="dropify-render"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message">Drag and drop to replace</p></div></div></div>',
+          filename:        '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner"></span></p>',
+          clearButton:     '<button type="button" class="dropify-clear" style="margin-right:60px">Remove</button>',
+          errorLine:       '<p class="dropify-error">No Image</p>',
+          errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+        },
+
+        error: {
+          'fileSize': 'The file size is too big (2MB max).'
+        }
+
+        });
+        console.log('mil gya na janu....!!!!');
+        drEvent2 = drEvent2.data('dropify');
+        // drEvent2.resetPreview();
+        // drEvent2.clearElement();
+        drEvent2.settings.defaultFile = imagenUrl2;
+        drEvent2.destroy();
+        drEvent2.init();
+      }
 
         $('#editDustbinModal').modal('show');
       }
@@ -77,59 +136,68 @@
   }
 
   function openEditBinUsage(recordId) {
+    let url = `{{url('fetchBinUsage/${recordId}')}}`;
     $.ajax({
-      url: '/fetchBinUsage/' + recordId,
-      type: 'GET',
-      success: function(data) {
-        $('#eighth1').val(data.eighth_1);
-        $('#eighth2').val(data.eighth_2);
-        $('#eighth3').val(data.eighth_3);
-        $('#eighth4').val(data.eighth_4);
-        $('#eighth5').val(data.eighth_5);
-        $('#eighth6').val(data.eighth_6);
+
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      console.log(data);
+      $('#eighth1').val(data.eighth_1);
+      $('#eighth2').val(data.eighth_2);
+      $('#eighth3').val(data.eighth_3);
+      $('#eighth4').val(data.eighth_4);
+      $('#eighth5').val(data.eighth_5);
+      $('#eighth6').val(data.eighth_6);
+
 
         $('#BinUsageid').val(recordId);
 
-        $('#editDustbinupdate').modal('show');
-      }
+
+      $('#editDustbinusage').modal('show');
+    }
+
     });
   }
 
   function openEditWasteRemoval(recordId) {
+    let url = `{{url('fetchWasteRemoval/${recordId}')}}`;
     $.ajax({
-      url: '/fetchWasteRemoval/' + recordId,
-      type: 'GET',
-      success: function(data) {
-        $('#day_1').val(data.day_1);
-        $('#day_2').val(data.day_2);
-        $('#day_3').val(data.day_3);
-        $('#day_4').val(data.day_4);
-        $('#day_5').val(data.day_5);
-        $('#day_6').val(data.day_6);
-        $('#day_7').val(data.day_7);
-        $('#day_8').val(data.day_8);
-        $('#day_9').val(data.day_9);
-        $('#day_10').val(data.day_10);
-        $('#day_11').val(data.day_11);
-        $('#day_12').val(data.day_12);
-        $('#day_13').val(data.day_13);
-        $('#day_14').val(data.day_14);
-        $('#day_15').val(data.day_15);
-        $('#day_16').val(data.day_16);
-        $('#day_17').val(data.day_17);
-        $('#day_18').val(data.day_18);
-        $('#day_19').val(data.day_19);
-        $('#day_20').val(data.day_20);
-        $('#day_21').val(data.day_21);
-        $('#day_22').val(data.day_22);
-        $('#day_23').val(data.day_23);
-        $('#day_24').val(data.day_24);
-        $('#day_25').val(data.day_25);
-        $('#day_26').val(data.day_26);
-        $('#day_27').val(data.day_27);
-        $('#day_28').val(data.day_28);
-        $('#day_29').val(data.day_29);
-        $('#day_30').val(data.day_30);
+
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      $('#day_1').val(data.day_1);
+      $('#day_2').val(data.day_2);
+      $('#day_3').val(data.day_3);
+      $('#day_4').val(data.day_4);
+      $('#day_5').val(data.day_5);
+      $('#day_6').val(data.day_6);
+      $('#day_7').val(data.day_7);
+      $('#day_8').val(data.day_8);
+      $('#day_9').val(data.day_9);
+      $('#day_10').val(data.day_10);
+      $('#day_11').val(data.day_11);
+      $('#day_12').val(data.day_12);
+      $('#day_13').val(data.day_13);
+      $('#day_14').val(data.day_14);
+      $('#day_15').val(data.day_15);
+      $('#day_16').val(data.day_16);
+      $('#day_17').val(data.day_17);
+      $('#day_18').val(data.day_18);
+      $('#day_19').val(data.day_19);
+      $('#day_20').val(data.day_20);
+      $('#day_21').val(data.day_21);
+      $('#day_22').val(data.day_22);
+      $('#day_23').val(data.day_23);
+      $('#day_24').val(data.day_24);
+      $('#day_25').val(data.day_25);
+      $('#day_26').val(data.day_26);
+      $('#day_27').val(data.day_27);
+      $('#day_28').val(data.day_28);
+      $('#day_29').val(data.day_29);
+      $('#day_30').val(data.day_30);
+
 
         $('#WasteRemovalid').val(recordId);
         // $('#dustbin_id').val(data.dustbin_id);
@@ -140,22 +208,24 @@
   }
 
   function openEditRepairCost(recordId) {
+    let url = `{{url('fetchRepairCost/${recordId}')}}`;
     $.ajax({
-      url: '/fetchRepairCost/' + recordId,
-      type: 'GET',
-      success: function(data) {
-        $('#jan').val(data.jan);
-        $('#feb').val(data.feb);
-        $('#mar').val(data.mar);
-        $('#apr').val(data.apr);
-        $('#may').val(data.may);
-        $('#jun').val(data.jun);
-        $('#jul').val(data.jul);
-        $('#aug').val(data.aug);
-        $('#sep').val(data.sep);
-        $('#oct').val(data.oct);
-        $('#nov').val(data.nov);
-        $('#dec').val(data.dec);
+
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      $('#jan').val(data.jan);
+      $('#feb').val(data.feb);
+      $('#mar').val(data.mar);
+      $('#apr').val(data.apr);
+      $('#may').val(data.may);
+      $('#jun').val(data.jun);
+      $('#jul').val(data.jul);
+      $('#aug').val(data.aug);
+      $('#sep').val(data.sep);
+      $('#oct').val(data.oct);
+      $('#nov').val(data.nov);
+      $('#dec').val(data.dec);
 
         $('#RepairCostid').val(recordId);
 
@@ -165,22 +235,25 @@
   }
 
   function openEditMaintenanceCost(recordId) {
+    let url = `{{url('fetchMaintenanceCost/${recordId}')}}`;
     $.ajax({
-      url: '/fetchMaintenanceCost/' + recordId,
-      type: 'GET',
-      success: function(data) {
-        $('#jan1').val(data.jan);
-        $('#feb1').val(data.feb);
-        $('#mar1').val(data.mar);
-        $('#apr1').val(data.apr);
-        $('#may1').val(data.may);
-        $('#jun1').val(data.jun);
-        $('#jul1').val(data.jul);
-        $('#aug1').val(data.aug);
-        $('#sep1').val(data.sep);
-        $('#oct1').val(data.oct);
-        $('#nov1').val(data.nov);
-        $('#dec1').val(data.dec);
+
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      $('#jan1').val(data.jan);
+      $('#feb1').val(data.feb);
+      $('#mar1').val(data.mar);
+      $('#apr1').val(data.apr);
+      $('#may1').val(data.may);
+      $('#jun1').val(data.jun);
+      $('#jul1').val(data.jul);
+      $('#aug1').val(data.aug);
+      $('#sep1').val(data.sep);
+      $('#oct1').val(data.oct);
+      $('#nov1').val(data.nov);
+      $('#dec1').val(data.dec);
+
 
         $('#MaintenanceCostid').val(recordId);
 
@@ -190,14 +263,17 @@
   }
 
   function openEditResponseTime(recordId) {
+    let url = `{{url('fetchResponseTime/${recordId}')}}`;
     $.ajax({
-      url: '/fetchResponseTime/' + recordId,
-      type: 'GET',
-      success: function(data) {
-        $('#1_hr').val(data['1_hr']);
-        $('#2_hr').val(data['2_hr']);
-        $('#4_hr').val(data['4_hr']);
-        $('#4_plus_hr').val(data['4_plus_hr']);
+
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      $('#1_hr').val(data['1_hr']);
+      $('#2_hr').val(data['2_hr']);
+      $('#4_hr').val(data['4_hr']);
+      $('#4_plus_hr').val(data['4_plus_hr']);
+
 
         $('#ResponseTimeid').val(recordId);
 
@@ -207,22 +283,25 @@
   }
 
   function openEditSatisfiedPublic(recordId) {
+    let url = `{{url('fetchPublicSatisfaction/${recordId}')}}`;
     $.ajax({
-      url: '/fetchPublicSatisfaction/' + recordId,
-      type: 'GET',
-      success: function(data) {
-        $('#jan2').val(data.jan);
-        $('#feb2').val(data.feb);
-        $('#mar2').val(data.mar);
-        $('#apr2').val(data.apr);
-        $('#may2').val(data.may);
-        $('#jun2').val(data.jun);
-        $('#jul2').val(data.jul);
-        $('#aug2').val(data.aug);
-        $('#sep2').val(data.sep);
-        $('#oct2').val(data.oct);
-        $('#nov2').val(data.nov);
-        $('#dec2').val(data.dec);
+
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      $('#jan2').val(data.jan);
+      $('#feb2').val(data.feb);
+      $('#mar2').val(data.mar);
+      $('#apr2').val(data.apr);
+      $('#may2').val(data.may);
+      $('#jun2').val(data.jun);
+      $('#jul2').val(data.jul);
+      $('#aug2').val(data.aug);
+      $('#sep2').val(data.sep);
+      $('#oct2').val(data.oct);
+      $('#nov2').val(data.nov);
+      $('#dec2').val(data.dec);
+
 
         $('#PublicSatisfactionid').val(recordId);
 
@@ -232,15 +311,18 @@
   }
 
   function openEditWasteBreakdown(recordId) {
+    let url = `{{url('fetchWasteBreakdown/${recordId}')}}`;
     $.ajax({
-      url: '/fetchWasteBreakdown/' + recordId,
-      type: 'GET',
-      success: function(data) {
-        $('#organic_waste').val(data['organic_waste']);
-        $('#bottles_cans').val(data['bottles_cans']);
-        $('#paper_packaging').val(data['paper_packaging']);
-        $('#cardboard').val(data['cardboard']);
-        $('#other_waste').val(data['other_waste']);
+
+    url: url,
+    type: 'GET',
+    success: function(data) {
+      $('#organic_waste').val(data['organic_waste']);
+      $('#bottles_cans').val(data['bottles_cans']);
+      $('#paper_packaging').val(data['paper_packaging']);
+      $('#cardboard').val(data['cardboard']);
+      $('#other_waste').val(data['other_waste']);
+
 
         $('#WasteBreakdownid').val(recordId);
 
@@ -319,7 +401,7 @@
             <label class="form-label font-weight-bolder">Image</label>
             <div class="col-12 mb-3 d-flex justify-content-center align-items-center">
               <div style="width: 210px; display: block;">
-                <input id="photo" name="photo" type="file" class="dropify" data-max-file-size="2M" data-allowed-file-extensions="jpg jpeg png gif" required>
+                <input id="photo" name="photo" type="file" class="dropify" data-max-file-size="2M" data-allowed-file-extensions="jpg jpeg png gif">
               </div>
             </div>
           </div>
@@ -374,7 +456,7 @@
     <table id="dustbintable" class="table table-hover">
       @foreach ($bin_waste_removals as $bin_waste_removal)
       <thead class="table-border-bottom-1 table-primary">
-        <tr class="text-center">
+        <tr class="text-center text-nowrap">
           <th>Day 1</th>
           <th>Day 2</th>
           <th>Day 3</th>
@@ -385,9 +467,6 @@
           <th>Day 8</th>
           <th>Day 9</th>
           <th>Day 10</th>
-          <th class=border-bottom-0></th>
-        </tr>
-        <tr class="text-center">
           <th>Day 11</th>
           <th>Day 12</th>
           <th>Day 13</th>
@@ -398,10 +477,6 @@
           <th>Day 18</th>
           <th>Day 19</th>
           <th>Day 20</th>
-          <th class="border-bottom-0">Action</th>
-
-        </tr>
-        <tr class="text-center">
           <th>Day 21</th>
           <th>Day 22</th>
           <th>Day 23</th>
@@ -412,12 +487,12 @@
           <th>Day 28</th>
           <th>Day 29</th>
           <th>Day 30</th>
-          <th></th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody class="table-border-bottom-0">
 
-        <tr class="text-center">
+        <tr class="text-center text-nowrap">
           <td><span class="fw-medium">{{ $bin_waste_removal['day_1'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_2'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_3'] }}</span></td>
@@ -428,8 +503,6 @@
           <td><span class="fw-medium">{{ $bin_waste_removal['day_8'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_9'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_10'] }}</span></td>
-        </tr>
-        <tr class="text-center">
           <td><span class="fw-medium">{{ $bin_waste_removal['day_11'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_12'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_13'] }}</span></td>
@@ -440,9 +513,6 @@
           <td><span class="fw-medium">{{ $bin_waste_removal['day_18'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_19'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_20'] }}</span></td>
-          <td class="border-bottom-0"><a class="btn btn-success btn-sm text-white" onclick="openEditWasteRemoval({{ $bin_waste_removal['id'] }})">Update</a></span></td>
-        </tr>
-        <tr class="text-center">
           <td><span class="fw-medium">{{ $bin_waste_removal['day_21'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_22'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_23'] }}</span></td>
@@ -453,6 +523,7 @@
           <td><span class="fw-medium">{{ $bin_waste_removal['day_28'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_29'] }}</span></td>
           <td><span class="fw-medium">{{ $bin_waste_removal['day_30'] }}</span></td>
+          <td class="border-bottom-0"><a class="btn btn-success btn-sm text-white" onclick="openEditWasteRemoval({{ $bin_waste_removal['id'] }})">Update</a></span></td>
         </tr>
       </tbody>
       @endforeach
