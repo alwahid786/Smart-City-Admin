@@ -21,8 +21,9 @@ use Carbon\Carbon;
 <script>
     
     function openEditWaterUsage(recordId) {
+        let url = `{{url('fetchWaterUsage/${recordId}')}}`;
         $.ajax({
-        url: '/fetchWaterUsage/' + recordId,
+        url: url,
         type: 'GET',
         success: function(data) {
         console.log(data);
@@ -40,8 +41,9 @@ use Carbon\Carbon;
     }
     
     function openEditWaterEnergyUtilization(recordId) {
+        let url = `{{url('fetchWaterEnergyUtilization/${recordId}')}}`;
         $.ajax({
-        url: '/fetchWaterEnergyUtilization/' + recordId,
+        url: url,
         type: 'GET',
         success: function(data) {
         console.log(data);
@@ -53,16 +55,16 @@ use Carbon\Carbon;
         $('#eighth_6').val(data.eighth_6);
         
         $('#EnergyUtilizationid').val(recordId);
-        $('#EnergyUtilizationWater_id').val(data.water_id);
-
+        
         $('#editEnergyUtilization').modal('show');
         }
         });
     }
 
     function openEditWaterEnergyBreakdown(recordId) {
+        let url = `{{url('fetchWaterEnergyBreakdown/${recordId}')}}`;
         $.ajax({
-        url: '/fetchWaterEnergyBreakdown/' + recordId,
+        url: url,
         type: 'GET',
         success: function(data) {
         console.log(data);
@@ -73,21 +75,16 @@ use Carbon\Carbon;
         $('#others').val(data.others);
         
         $('#EnergyBreakdownid').val(recordId);
-        $('#EnergyBreakdownWater_id').val(data.water_id);
-
+        
         $('#editEnergyBreakdown').modal('show');
         }
         });
     }
 
     function openEditWaterUsageBreakdownWasteDischarge(recordId, type) {
-        console.log(recordId, type);
-        console.log(recordId, type);
-        console.log(recordId, type);
-        console.log(recordId, type);
-
+        let url = `{{url('fetchUsageBreakdownWasteDischarges/${recordId}/${type}')}}`;
         $.ajax({
-        url: '/fetchUsageBreakdownWasteDischarges/' + recordId + '/' + type,
+        url: url,
         type: 'GET',
         success: function(data) {
         $('#UsageBreakdownWasteDischargeModalHeading').text('Update ' + type);
@@ -97,7 +94,6 @@ use Carbon\Carbon;
         $('#agriculture').val(data.agriculture);
         
         $('#UsageBreakdownORWasteDischargeid').val(recordId);
-        $('#UsageBreakdownORWasteDischargeWater_id').val(data.water_id);
         $('#UsageBreakdownORWasteDischargeType').val(type);
 
         $('#editUsageBreakdownWasteDischargeModal').modal('show');
@@ -395,7 +391,7 @@ use Carbon\Carbon;
                             <label for="eighth_1" class="form-label">Eighth 1</label>
                             <input type="text" id="eighth_1" class="form-control" name="eighth_1" required>
                             <input type="hidden" name="id" id="EnergyUtilizationid">
-                            <input type="hidden" name="water_id" id="EnergyUtilizationWater_id">
+                            <input type="hidden" name="water_id" value="{{ $water_id }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="eighth_2" class="form-label">Eighth 2</label>
@@ -444,7 +440,7 @@ use Carbon\Carbon;
                             <label for="industrial" class="form-label">Industrial</label>
                             <input type="text" id="industrial" class="form-control" name="industrial" required>
                             <input type="hidden" name="id" id="EnergyBreakdownid">
-                            <input type="hidden" name="water_id" id="EnergyBreakdownWater_id">
+                            <input type="hidden" name="water_id" value="{{ $water_id }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="commerce" class="form-label">Commerce</label>
@@ -491,7 +487,7 @@ use Carbon\Carbon;
                             <input type="text" id="industrial1" class="form-control" name="industrial" required>
                             <input type="hidden" name="id" id="UsageBreakdownORWasteDischargeid">
                             <input type="hidden" name="type" id="UsageBreakdownORWasteDischargeType">
-                            <input type="hidden" name="water_id" id="UsageBreakdownORWasteDischargeWater_id">
+                            <input type="hidden" name="water_id" value="{{ $water_id }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="commercial" class="form-label">Commercial</label>

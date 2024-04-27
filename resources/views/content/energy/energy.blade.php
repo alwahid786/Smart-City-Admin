@@ -20,8 +20,9 @@ use Carbon\Carbon;
 <script src="{{asset('assets/js/dashboards-analytics.js')}}"></script>
 <script>
     function openEditEnergy(recordId) {
+    let url = `{{url('fetchEnergy/${recordId}')}}`;
     $.ajax({
-    url: '/fetchEnergy/' + recordId,
+    url: url,
     type: 'GET',
     success: function(data) {
         $('#energy').val(data.energy);
@@ -45,8 +46,9 @@ use Carbon\Carbon;
   }
 
   function openEditEnergyData(recordId, energy) {
+    let url = `{{url('fetchEnergyData/${recordId}/${energy}')}}`;
     $.ajax({
-    url: '/fetchEnergyData/' + recordId + '/' + energy,
+    url: url,
     type: 'GET',
     success: function(data) {
         console.log(data);
@@ -57,16 +59,16 @@ use Carbon\Carbon;
 
         $('#EnergyDataid').val(recordId);
         $('#EnergyDatatype').val(energy);
-        $('#EnergyData_id').val(data.energy_id);
-
+        
         $('#editEnergyData').modal('show');
     }
     });
   }
 
   function openEditConnectionType(recordId) {
+    let url = `{{url('fetchConnectionType/${recordId}')}}`;
     $.ajax({
-    url: '/fetchConnectionType/' + recordId,
+    url: url,
     type: 'GET',
     success: function(data) {
         $('#power').val(data.power);
@@ -76,16 +78,16 @@ use Carbon\Carbon;
         $('#mixed_load').val(data.mixed_load);
         
         $('#ConnectionTypeid').val(recordId);
-        $('#ConnectionTypeEnergy_id').val(data.energy_id);
-
+        
         $('#editConnectionType').modal('show');
     }
     });
   }
 
   function openEditUsageHour(recordId) {
+    let url = `{{url('fetchUsageHours/${recordId}')}}`;
     $.ajax({
-    url: '/fetchUsageHours/' + recordId,
+    url: url,
     type: 'GET',
     success: function(data) {
         $('#eighth_1').val(data.eighth_1);
@@ -96,8 +98,7 @@ use Carbon\Carbon;
         $('#eighth_6').val(data.eighth_6);
         
         $('#UsageHoursid').val(recordId);
-        $('#UsageHoursEnergy_id').val(data.energy_id);
-
+        
         $('#editUsageHours').modal('show');
     }
     });
@@ -473,7 +474,7 @@ use Carbon\Carbon;
                             <input type="text" id="energy_intensity" class="form-control" name="energy_intensity" required>
                             <input type="hidden" name="id" id="EnergyDataid">
                             <input type="hidden" name="type" id="EnergyDatatype">
-                            <input type="hidden" name="Energy_id" id="EnergyData_id">
+                            <input type="hidden" name="Energy_id" value="{{ $energyid }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="energy" class="form-label">Energy</label>
@@ -510,7 +511,7 @@ use Carbon\Carbon;
                             <label for="power" class="form-label">Power</label>
                             <input type="text" id="power" class="form-control" name="power" required>
                             <input type="hidden" name="id" id="ConnectionTypeid">
-                            <input type="hidden" name="Energy_id" id="ConnectionTypeEnergy_id">
+                            <input type="hidden" name="Energy_id" value="{{ $energyid }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="acmv" class="form-label">ACMV</label>
@@ -555,7 +556,7 @@ use Carbon\Carbon;
                             <label for="eighth_1" class="form-label">Eighth 1</label>
                             <input type="text" id="eighth_1" class="form-control" name="eighth_1" required>
                             <input type="hidden" name="id" id="UsageHoursid">
-                            <input type="hidden" name="Energy_id" id="UsageHoursEnergy_id">
+                            <input type="hidden" name="Energy_id" value="{{ $energyid }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="eighth_2" class="form-label">Eighth 2</label>

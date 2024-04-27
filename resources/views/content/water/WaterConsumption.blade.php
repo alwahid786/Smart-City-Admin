@@ -21,8 +21,9 @@ use Carbon\Carbon;
 <script>
     
     function openEditElectricityConsumption(recordId) {
+        let url = `{{url('fetchElectricityConsumption/${recordId}')}}`;
         $.ajax({
-        url: '/fetchElectricityConsumption/' + recordId,
+        url: url,
         type: 'GET',
         success: function(data) {
         console.log(data);
@@ -31,15 +32,15 @@ use Carbon\Carbon;
         
         $('#ElectricityConsumptionid').val(recordId);
         $('#ElectricityConsumptionMonth').val(data.month);
-        $('#ElectricityConsumptionWater_id').val(data.water_id);
         $('#editElectricityConsumption').modal('show');
         }
         });
     }
     
     function openEditAverageConsumption(recordId) {
+        let url = `{{url('fetchAverageConsumption/${recordId}')}}`;
         $.ajax({
-        url: '/fetchAverageConsumption/' + recordId,
+        url: url,
         type: 'GET',
         success: function(data) {
         console.log(data);
@@ -48,7 +49,6 @@ use Carbon\Carbon;
 
         $('#AverageConsumptionid').val(recordId);
         $('#AverageConsumptionMonth').val(data.month);
-        $('#AverageConsumptionWater_id').val(data.water_id);
         $('#editAverageConsumption').modal('show');
         }
         });
@@ -110,7 +110,7 @@ use Carbon\Carbon;
                             <input type="text" id="room_name" class="form-control" name="room_name" required>
                             <input type="hidden" name="id" id="ElectricityConsumptionid">
                             <input type="hidden" name="month" id="ElectricityConsumptionMonth">
-                            <input type="hidden" name="water_id" id="ElectricityConsumptionWater_id">
+                            <input type="hidden" name="water_id" value="{{ $water_id }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="energy_usage" class="form-label">Energy Usage</label>
@@ -178,7 +178,7 @@ use Carbon\Carbon;
                             <input type="text" id="type" class="form-control" name="type" required>
                             <input type="hidden" name="id" id="AverageConsumptionid">
                             <input type="hidden" name="month" id="AverageConsumptionMonth">
-                            <input type="hidden" name="water_id" id="AverageConsumptionWater_id">
+                            <input type="hidden" name="water_id" value="{{ $water_id }}">
                         </div>
                         <div class="col-6 mb-3">
                             <label for="value" class="form-label">Value</label>
